@@ -1,0 +1,12 @@
+div {
+  margin-bottom: 10px;
+}
+
+img {
+  border: thin solid black;
+  padding: 5px;
+}
+
+.redText {
+  color: red;
+}

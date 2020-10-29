@@ -13,7 +13,7 @@
     <!-- <script src="script.js"></script> -->
   </head>
   <body>
-    <div id="diceDiv">
+    <div id="diceDiv" name="diceDiv">
         <img src="1.gif" id="Die1" class="Die" />
         <img src="2.gif" id="Die2" class="Die" />
         <img src="3.gif" id="Die3" class="Die" />
@@ -23,7 +23,7 @@
     </div>
     <div id="betDiv">
       Bet Amount:
-      <input type="number" id="betAmount" />
+      <input id="betAmount" />
   </div>
   
   <div id="bankDiv">
@@ -44,7 +44,7 @@
   
   <div id="buttonDiv">
       <button class="btn btn-primary" onclick="onRollDice()">Roll Dice</button>
-      <button class="btn btn-secondary" onclick="onNewGame">New Game</button>
+      <button class="btn btn-secondary" onclick="onNewGame()">New Game</button>
   </div>
   
   <div id="rollResult">
@@ -57,25 +57,125 @@
 
     });
 
+    var currentBank = 150.00;
+
     function onRollDice() {
-      var rand = Math.floor(Math.random() * 6) + 1;
-      $('#Die1').attr('src', rand + '.gif');
+      rollDice();
+      GetRollResult();
+    }
 
-      rand = Math.floor(Math.random() * 6) + 1;
-      $('#Die2').attr('src', rand + '.gif');
+    function onNewGame() {
+    }
 
-      rand = Math.floor(Math.random() * 6) + 1;
-      $('#Die3').attr('src', rand + '.gif');
+    function rollDice() {
+      var x = document.getElementById("diceDiv");
+      var images = x.getElementsByTagName("img");
+      var i;
+      for (i = 0; i < images.length; i++) {
+        var rand = Math.floor(Math.random() * 6) + 1;
+        images[i].setAttribute('src', rand + '.gif');
+      }
+    }
 
-      rand = Math.floor(Math.random() * 6) + 1;
-      $('#Die4').attr('src', rand + '.gif');
+    function GetRollResult() {
+      var betAmount = $("#betAmount")
+      var matches = GetMatches();
+      var rollResult = "";
 
-      rand = Math.floor(Math.random() * 6) + 1;
-      $('#Die5').attr('src', rand + '.gif');
+      switch(matches) {
+        case 5:
+            console.log("5 of a kind.");
+            currentBank += betAmount * 100;
+            rollResult = "5 of a kind. You win " + betAmount * 100;
+            break;
 
-      rand = Math.floor(Math.random() * 6) + 1;
-      $('#Die6').attr('src', rand + '.gif');
+        case 4:
+            console.log("4 of a kind.");
+            currentBank += betAmount * 50;
+            rollResult = "5 of a kind. You win " + betAmount * 50;
 
-    };
+            break;
+
+        case 3:
+            console.log("3 of a kind.");
+            currentBank += betAmount * 10;
+            rollResult = "5 of a kind. You win " + betAmount * 10;
+            break;
+
+        default:
+            if(GetConsecutive() == true) {
+                console.log("Straight.");
+                currentBank += betAmount * 5;
+                rollResult = "You rolled a straight. You win" + betAmount * 5;
+            }
+            else {
+                console.log("Bad roll.");
+                currentBank -= betAmount;
+                rollResult = "You lost " + betAmount;
+
+            }
+            break;
+    }
+
+    function GetMatches() {
+      var diceDiv = document.getElementById("diceDiv");
+      var images = diceDiv.querySelectorAll('img');   // getElementsByTagName("img");
+      var matches = [];
+      var match = 0;
+      var largest = 0;
+
+      var i;
+      for (i = 0; i < images.length; i++) {
+          var src = images[i].src;
+          //var imageNumber = src.split(".")[0];
+          var imageNumber = gifNumber(src);
+
+          var match = matches[imageNumber];
+          if(match === undefined) {
+            matches[imageNumber] = 1;
+          }
+          else {
+            matches[imageNumber] = matches[imageNumber] + 1;
+          }
+        }
+
+        matches.forEach(function(item, index) {
+          if(item > largest) {
+            largest = item;
+          }
+        });
+
+        return largest;
+    }
+
+    function GetConsecutive() {
+        var diceDiv = document.getElementById("diceDiv");
+        var images = diceDiv.querySelectorAll('img');
+
+        var dieNumber = gifNumber(images[0].src);
+        var consecutive = 1;  // init to 1 because that's the minimum
+        var i;
+        for (i = 1; i < images.length; i++) {
+            var a = parseInt(gifNumber(images[i].src));
+            var b = parseInt(gifNumber(images[i - 1].src));
+            if (a == (b + 1))
+                consecutive++;
+            else
+                consecutive = 1; // init to 1 because that's the minimum
+
+            if (consecutive == 3)
+                return true;
+        }
+
+        return false;
+    }
+
+    function gifNumber(gifName) {
+        var filename= gifName.split('/').pop()
+        var dotIndex = filename.indexOf(".");
+        var gifNumber = filename.substring(dotIndex - 1, dotIndex);
+        return gifNumber;
+    }
+  }
   </script>
 </html>

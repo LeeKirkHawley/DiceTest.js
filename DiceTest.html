@@ -21,13 +21,14 @@
         <img src="5.gif" id="Die5" class="Die" />
         <img src="6.gif" id="Die6" class="Die" />
     </div>
+
     <div id="betDiv">
       Bet Amount:
-      <input id="betAmount" />
+      <input id="betAmount" value="10"/>
   </div>
   
   <div id="bankDiv">
-      Current Bank: <span class="redText"></span>
+      Current Bank: <span class="redText" id="currentBankSpan" name="currentBankSpan"></span>
   </div>
   
   <div id="scoringDiv">
@@ -47,8 +48,8 @@
       <button class="btn btn-secondary" onclick="onNewGame()">New Game</button>
   </div>
   
-  <div id="rollResult">
-      <span class="redText"></span>
+  <div id="rollResultDiv">
+      <span class="redText" id="rollResultSpan" name="rollResultSpan">should be here</span>
   </div>
   
   </body>
@@ -78,43 +79,45 @@
     }
 
     function GetRollResult() {
-      var betAmount = $("#betAmount")
+      var betAmount = $("#betAmount")[0].value;
       var matches = GetMatches();
-      var rollResult = "";
 
       switch(matches) {
         case 5:
             console.log("5 of a kind.");
             currentBank += betAmount * 100;
-            rollResult = "5 of a kind. You win " + betAmount * 100;
+            $("#rollResultSpan")[0].innerText = "5 of a kind. You win " + betAmount * 100;
             break;
 
         case 4:
             console.log("4 of a kind.");
             currentBank += betAmount * 50;
-            rollResult = "5 of a kind. You win " + betAmount * 50;
+            $("#rollResultSpan")[0].innerText = "4 of a kind. You win " + betAmount * 50;
 
             break;
 
         case 3:
             console.log("3 of a kind.");
             currentBank += betAmount * 10;
-            rollResult = "5 of a kind. You win " + betAmount * 10;
+            $("#rollResultSpan")[0].innerText = "3 of a kind. You win " + betAmount * 10;
             break;
 
         default:
             if(GetConsecutive() == true) {
                 console.log("Straight.");
                 currentBank += betAmount * 5;
-                rollResult = "You rolled a straight. You win" + betAmount * 5;
+                $("#rollResultSpan")[0].innerText = "You rolled a straight. You win " + betAmount * 5;
             }
             else {
                 console.log("Bad roll.");
                 currentBank -= betAmount;
-                rollResult = "You lost " + betAmount;
+                $("#rollResultSpan")[0].innerText = "You lost " + betAmount;
 
             }
             break;
+          }
+
+      $("#currentBankSpan")[0].innerText = currentBank;
     }
 
     function GetMatches() {
@@ -176,6 +179,5 @@
         var gifNumber = filename.substring(dotIndex - 1, dotIndex);
         return gifNumber;
     }
-  }
   </script>
 </html>

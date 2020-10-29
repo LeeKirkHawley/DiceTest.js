@@ -25,14 +25,13 @@
     <div id="betDiv">
       Bet Amount:
       <input id="betAmount" value="10"/>
-  </div>
+    </div>
   
-  <div id="bankDiv">
+    <div id="bankDiv">
       Current Bank: <span class="redText" id="currentBankSpan" name="currentBankSpan"></span>
-  </div>
+    </div>
   
-  <div id="scoringDiv">
-      <br />
+    <div id="scoringDiv">
       5 of a kind - 100x bet
       <br />
       4 of a kind - 50x bet
@@ -41,31 +40,46 @@
       <br />
       Straight - 5x bet
       <br />
-  </div>
+    </div>
   
-  <div id="buttonDiv">
+    <div id="buttonDiv">
       <button class="btn btn-primary" onclick="onRollDice()">Roll Dice</button>
       <button class="btn btn-secondary" onclick="onNewGame()">New Game</button>
-  </div>
+    </div>
   
-  <div id="rollResultDiv">
-      <span class="redText" id="rollResultSpan" name="rollResultSpan">should be here</span>
-  </div>
+    <div id="rollResultDiv">
+      <span class="redText" id="rollResultSpan" name="rollResultSpan"></span>
+    </div>
   
   </body>
   <script>
     $(document).ready(function() {
-
+        onNewGame();
     });
 
-    var currentBank = 150.00;
+    var currentBank = 270.00;
 
     function onRollDice() {
+      var betAmount = $("#betAmount")[0].value;
+      if(betAmount > currentBank) {
+        $("#rollResultSpan")[0].innerText = "You don't have enough money for that bet.";
+        return;
+      }
+
       rollDice();
       GetRollResult();
     }
 
     function onNewGame() {
+      currentBank = 270.00;
+      $("#currentBankSpan")[0].innerText = "$" + currentBank;
+
+      var x = document.getElementById("diceDiv");
+      var images = x.getElementsByTagName("img");
+      var i;
+      for (i = 0; i < images.length; i++) {
+        images[i].setAttribute('src', (i + 1) + '.gif');
+      }
     }
 
     function rollDice() {
@@ -117,7 +131,7 @@
             break;
           }
 
-      $("#currentBankSpan")[0].innerText = currentBank;
+          $("#currentBankSpan")[0].innerText = "$" + currentBank;
     }
 
     function GetMatches() {
